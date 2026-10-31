@@ -1,181 +1,110 @@
-// Global Durum Değişkenleri
-let tumEtkinlikler = [];
-let aktifTur = "tumu";
-let aktifAramaMetni = "";
+document.addEventListener('DOMContentLoaded', () => {
+  let tumEtkinlikler = [];
+  let aktifTur = 'hepsi';
 
-// DOM Elemanları
-const kartlarGrid = document.getElementById("kartlar-grid");
-const aramaGirdisi = document.getElementById("arama-girdisi");
-const filtreButonlari = document.querySelectorAll(".filtre-butonu");
-const etkinlikFormu = document.getElementById("etkinlik-formu");
-const formBildirim = document.getElementById("form-bildirim");
+  const listeKapsayici = document.getElementById('etkinlik-listesi');
+  const aramaInput = document.getElementById('arama-girdisi');
+  const filtreButonlari = document.querySelectorAll('.filtre-btn');
+  const form = document.getElementById('oneri-formu');
+  const bildirimKutusu = document.getElementById('form-sonuc-mesaji');
+  const yukleniyorKutusu = document.getElementById('yukleniyor-mesaji');
 
-// D2: API'den Veri Çekme Fonksiyonu (async/await, try/catch, response.ok)
-async function etkinlikleriYukle() {
-  kartlarGrid.innerHTML = "";
-  const yukleniyorYazisi = document.createElement("p");
-  yukleniyorYazisi.className = "durum-iletisi";
-  yukleniyorYazisi.textContent = "Etkinlikler yükleniyor, lütfen bekleyiniz...";
-  kartlarGrid.append(yukleniyorYazisi);
-
-  try {
-    const yanit = await fetch("/api/etkinlikler");
-
-    if (!yanit.ok) {
-      throw new Error(`Sunucu yanıt hatası: ${yanit.status}`);
+  async function verileriGetir() {
+    if (yukleniyorKutusu) {
+      yukleniyorKutusu.textContent = 'Etkinlikler yükleniyor, lütfen bekleyiniz...';
     }
 
-    tumEtkinlikler = await yanit.json();
-    kartlariFiltreleVeCiz();
-  } catch (hata) {
-    kartlarGrid.innerHTML = "";
-    const hataYazisi = document.createElement("p");
-    hataYazisi.className = "durum-iletisi";
-    hataYazisi.textContent = "Etkinlikler yüklenirken bir sorun oluştu. Lütfen sunucunun çalıştığından emin olunuz.";
-    kartlarGrid.append(hataYazisi);
-    console.error("Etkinlik yükleme hatası:", hata);
+    try {
+      const yanit = await fetch('/api/etkinlikler');
+      if (!yanit.ok) throw new Error('API Hatası');
+      tumEtkinlikler = await yanit.json();
+      if (yukleniyorKutusu) yukleniyorKutusu.textContent = '';
+      kartlariYansit(tumEtkinlikler);
+    } catch (hata) {
+      if (yukleniyorKutusu) {
+        yukleniyorKutusu.textContent = 'Etkinlikler yüklenirken bir sorun oluştu.';
+      }
+    }
   }
-}
 
-// C1: Tek Bir Kart Öğesi Oluşturma (createElement, textContent, append)
-function kartOlustur(etkinlik) {
-  const kart = document.createElement("article");
-  kart.className = "etkinlik-karti";
+  function kartlariYansit(liste) {
+    listeKapsayici.innerHTML = '';
+    if (liste.length === 0) {
+      listeKapsayici.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #5f6368; padding: 2rem;">Eşleşen etkinlik bulunamadı.</p>';
+      return;
+    }
 
-  // Başlık
-  const baslik = document.createElement("h2");
-  baslik.className = "kart-baslik";
-  baslik.textContent = etkinlik.baslik;
+    liste.forEach(item => {
+      const kart = document.createElement('article');
+      kart.className = 'etkinlik-karti';
 
-  // Detaylar Konteynırı
-  const detaylar = document.createElement("div");
-  detaylar.className = "kart-detaylar";
+      const baslik = document.createElement('h2');
+      baslik.textContent = item.baslik;
 
-  // Tarih (Türkçe Yerelleştirme)
-  const tarihSatir = document.createElement("p");
-  tarihSatir.className = "kart-detay-satir";
-  const etkinlikTarihi = new Date(etkinlik.tarih);
-  tarihSatir.textContent = `📅 Tarih: ${etkinlikTarihi.toLocaleDateString("tr-TR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  })}`;
+      const detaylar = document.createElement('div');
+      detaylar.className = 'kart-detaylar';
 
-  // Yer
-  const yerSatir = document.createElement("p");
-  yerSatir.className = "kart-detay-satir";
-  yerSatir.textContent = `📍 Yer: ${etkinlik.yer}`;
+      const satirTarih = document.createElement('p');
+      satirTarih.className = 'kart-satir';
+      satirTarih.textContent = `📅 Tarih: ${item.tarih}`;
 
-  // Kontenjan
-  const kontenjanSatir = document.createElement("p");
-  kontenjanSatir.className = "kart-detay-satir";
-  kontenjanSatir.textContent = `👥 Kontenjan: ${etkinlik.kontenjan} kişi`;
+      const satirYer = document.createElement('p');
+      satirYer.className = 'kart-satir';
+      satirYer.textContent = `📍 Yer: ${item.yer}`;
 
-  detaylar.append(tarihSatir, yerSatir, kontenjanSatir);
+      const satirKontenjan = document.createElement('p');
+      satirKontenjan.className = 'kart-satir';
+      satirKontenjan.textContent = `👥 Kontenjan: ${item.kontenjan} kişi`;
 
-  // Kart Alt Kısmı (Tür Rozeti)
-  const altKisim = document.createElement("div");
-  altKisim.className = "kart-alt";
+      detaylar.append(satirTarih, satirYer, satirKontenjan);
 
-  const turRozeti = document.createElement("span");
-  turRozeti.className = `tur-rozeti tur-${etkinlik.tur}`;
-  turRozeti.textContent = etkinlik.tur.toUpperCase();
+      const rozet = document.createElement('span');
+      rozet.className = `rozet ${item.tur}`;
+      rozet.textContent = item.tur.toUpperCase();
 
-  altKisim.append(turRozeti);
+      kart.append(baslik, detaylar, rozet);
+      listeKapsayici.appendChild(kart);
+    });
+  }
 
-  // Kartı Birleştirme
-  kart.append(baslik, detaylar, altKisim);
-  return kart;
-}
+  function filtreUygula() {
+    const metin = aramaInput.value.toLowerCase().trim();
+    const filtrelenmis = tumEtkinlikler.filter(e => {
+      const turEslesir = aktifTur === 'hepsi' || e.tur === aktifTur;
+      const metinEslesir = e.baslik.toLowerCase().includes(metin) || e.yer.toLowerCase().includes(metin);
+      return turEslesir && metinEslesir;
+    });
+    kartlariYansit(filtrelenmis);
+  }
 
-// C2: Filtre ve Arama Mantığı
-function kartlariFiltreleVeCiz() {
-  kartlarGrid.innerHTML = "";
+  aramaInput.addEventListener('input', filtreUygula);
 
-  const filtrelenmis = tumEtkinlikler.filter(etkinlik => {
-    const turUyumu = (aktifTur === "tumu") || (etkinlik.tur.toLowerCase() === aktifTur.toLowerCase());
-    const aramaUyumu = etkinlik.baslik.toLowerCase().includes(aktifAramaMetni.toLowerCase());
-    return turUyumu && aramaUyumu;
+  filtreButonlari.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filtreButonlari.forEach(b => b.classList.remove('aktif'));
+      btn.classList.add('aktif');
+      aktifTur = btn.getAttribute('data-tur');
+      filtreUygula();
+    });
   });
 
-  if (filtrelenmis.length === 0) {
-    const bosMesaj = document.createElement("p");
-    bosMesaj.className = "durum-iletisi";
-    bosMesaj.textContent = "Aramanıza uygun etkinlik bulunamadı.";
-    kartlarGrid.append(bosMesaj);
-    return;
-  }
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const baslik = document.getElementById('oneri-baslik').value.trim();
+    const tur = document.getElementById('oneri-tur').value;
+    const tarih = document.getElementById('oneri-tarih').value;
+    const yer = document.getElementById('oneri-yer').value.trim();
 
-  filtrelenmis.forEach(etkinlik => {
-    const kartDugumu = kartOlustur(etkinlik);
-    kartlarGrid.append(kartDugumu);
+    if (!baslik || !tur || !tarih || !yer) {
+      bildirimKutusu.className = 'bildirim-alani hata';
+      bildirimKutusu.textContent = 'Lütfen tüm zorunlu (*) alanları doldurunuz.';
+      return;
+    }
+
+    bildirimKutusu.className = 'bildirim-alani basarili';
+    bildirimKutusu.textContent = 'Öneriniz başarıyla kaydedildi!';
+    form.reset();
   });
-}
 
-// C2: Arama Kutusu Dinleyicisi
-aramaGirdisi.addEventListener("input", (e) => {
-  aktifAramaMetni = e.target.value.trim();
-  kartlariFiltreleVeCiz();
+  verileriGetir();
 });
-
-// C2: Tür Filtreleme Düğmeleri Dinleyicisi
-filtreButonlari.forEach(buton => {
-  buton.addEventListener("click", () => {
-    filtreButonlari.forEach(b => b.classList.remove("secili"));
-    buton.classList.add("secili");
-    aktifTur = buton.getAttribute("data-tur");
-    kartlariFiltreleVeCiz();
-  });
-});
-
-// C3: Form Doğrulama (preventDefault, textContent, hata kontrolü)
-etkinlikFormu.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const ad = document.getElementById("etkinlik-adi").value.trim();
-  const tarihDegeri = document.getElementById("etkinlik-tarih").value;
-  const eposta = document.getElementById("kullanici-eposta").value.trim();
-
-  formBildirim.className = "form-bildirim";
-  formBildirim.textContent = "";
-
-  // 1. Ad Denetimi: En az 5 karakter
-  if (ad.length < 5) {
-    formBildirim.textContent = "Etkinlik adı en az 5 karakter uzunluğunda olmalıdır.";
-    formBildirim.classList.add("hata");
-    return;
-  }
-
-  // 2. Tarih Denetimi: Boş olamaz ve geçmiş gün seçilemez
-  if (!tarihDegeri) {
-    formBildirim.textContent = "Lütfen bir etkinlik tarihi seçiniz.";
-    formBildirim.classList.add("hata");
-    return;
-  }
-
-  const secilenTarih = new Date(tarihDegeri);
-  const bugun = new Date();
-  bugun.setHours(0, 0, 0, 0);
-
-  if (secilenTarih < bugun) {
-    formBildirim.textContent = "Etkinlik tarihi geçmiş bir gün olamaz.";
-    formBildirim.classList.add("hata");
-    return;
-  }
-
-  // 3. E-posta Denetimi: Geçerli e-posta deseni
-  const epostaRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!epostaRegEx.test(eposta)) {
-    formBildirim.textContent = "Lütfen geçerli bir e-posta adresi giriniz.";
-    formBildirim.classList.add("hata");
-    return;
-  }
-
-  // Başarılı Durum
-  formBildirim.textContent = "Teşekkürler! Etkinlik öneriniz başarıyla kaydedildi.";
-  formBildirim.classList.add("basari");
-  etkinlikFormu.reset();
-});
-
-// Sayfa yüklendiğinde etkinlikleri getir
-document.addEventListener("DOMContentLoaded", etkinlikleriYukle);

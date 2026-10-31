@@ -1,3 +1,15 @@
 node_modules/
 .env
 .DS_Store
+
+# Bağımlılıklar
+node_modules/
+
+# Ortam ve sistem dosyaları
+.env
+.DS_Store
+Thumbs.db
+
+# VS Code yerel ayarları
+.vscode/
+*.log

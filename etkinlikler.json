@@ -3,7 +3,7 @@
     "id": 1,
     "baslik": "Web Programlama ile Full-Stack Giriş Atölyesi",
     "tur": "atolye",
-    "tarih": "2026-11-10",
+    "tarih": "10 Kasım 2026",
     "yer": "Mühendislik Fakültesi Lab 3",
     "kontenjan": 35
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "baslik": "Yapay Zekâ ve Büyük Dil Modelleri Söyleşisi",
     "tur": "soylesi",
-    "tarih": "2026-11-14",
+    "tarih": "14 Kasım 2026",
     "yer": "Erdoğan Akdağ Kongre Salonu",
     "kontenjan": 180
   },
@@ -19,7 +19,7 @@
     "id": 3,
     "baslik": "Google Developer Groups Tanışma ve Vizyon Toplantısı",
     "tur": "topluluk",
-    "tarih": "2026-11-18",
+    "tarih": "18 Kasım 2026",
     "yer": "Merkezi Kütüphane Seminer Odası",
     "kontenjan": 90
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "baslik": "Git & GitHub ile Versiyon Kontrolü Atölyesi",
     "tur": "atolye",
-    "tarih": "2026-11-22",
+    "tarih": "22 Kasım 2026",
     "yer": "Mühendislik Fakültesi Lab 1",
     "kontenjan": 30
   },
@@ -35,7 +35,7 @@
     "id": 5,
     "baslik": "Siber Güvenlikte Kariyer ve Tehdit Avcılığı",
     "tur": "soylesi",
-    "tarih": "2026-11-27",
+    "tarih": "27 Kasım 2026",
     "yer": "İİBF Konferans Salonu",
     "kontenjan": 120
   },
@@ -43,7 +43,7 @@
     "id": 6,
     "baslik": "Oyun Geliştirme ve Bağımsız Yapımcılar Buluşması",
     "tur": "topluluk",
-    "tarih": "2026-12-02",
+    "tarih": "2 Aralık 2026",
     "yer": "Gençlik Merkezi Çok Amaçlı Salon",
     "kontenjan": 75
   }

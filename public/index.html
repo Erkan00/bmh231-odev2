@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bozok Kampüs Etkinlik</title>
+  <link rel="stylesheet" href="stil.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span class="logo-ikon" aria-hidden="true">🎓</span>
+      <span>Bozok Kampüs Etkinlik</span>
+    </div>
+    <nav aria-label="Ana Menü">
+      <a href="#etkinlikler-alani">Etkinlikler</a>
+      <a href="#oneri-alani">Etkinlik Öner</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="etkinlikler-alani">
+      <div class="baslik-grubu">
+        <h1>Kampüs Etkinlik Panosu</h1>
+        <p class="alt-aciklama">Üniversitemizdeki güncel atölye, söyleşi ve kulüp etkinliklerini keşfedin.</p>
+      </div>
+
+      <div class="filtre-kapsayici">
+        <div class="arama-kutusu">
+          <label for="arama-girdisi" class="sr-only">Etkinlik adına göre ara</label>
+          <input type="search" id="arama-girdisi" placeholder="Etkinlik adına göre ara...">
+        </div>
+
+        <div class="buton-grubu" role="group" aria-label="Tür Filtresi">
+          <button type="button" class="filtre-btn aktif" data-tur="hepsi">Tümü</button>
+          <button type="button" class="filtre-btn" data-tur="atolye">Atölye</button>
+          <button type="button" class="filtre-btn" data-tur="soylesi">Söyleşi</button>
+          <button type="button" class="filtre-btn" data-tur="topluluk">Topluluk</button>
+        </div>
+      </div>
+
+      <div id="yukleniyor-mesaji" class="yukleniyor-alani" aria-live="polite"></div>
+
+      <div id="etkinlik-listesi" class="kart-grid" aria-live="polite"></div>
+    </section>
+
+    <section id="oneri-alani" class="form-bolumu">
+      <h2>Yeni Bir Etkinlik Öner</h2>
+      <p class="form-alt-bilgi">Kampüste görmek istediğiniz etkinliği iletin.</p>
+      <form id="oneri-formu" novalidate>
+        <div class="form-grup">
+          <label for="oneri-baslik">Etkinlik Başlığı *</label>
+          <input type="text" id="oneri-baslik" required placeholder="En az 5 karakter giriniz">
+        </div>
+        <div class="form-grup">
+          <label for="oneri-tur">Tür *</label>
+          <select id="oneri-tur" required>
+            <option value="">Seçiniz...</option>
+            <option value="atolye">Atölye</option>
+            <option value="soylesi">Söyleşi</option>
+            <option value="topluluk">Topluluk</option>
+          </select>
+        </div>
+        <div class="form-grup">
+          <label for="oneri-tarih">Tarih *</label>
+          <input type="date" id="oneri-tarih" required>
+        </div>
+        <div class="form-grup">
+          <label for="oneri-yer">Yer / Mekan *</label>
+          <input type="text" id="oneri-yer" required placeholder="Örn: Mühendislik Fakültesi Lab 3">
+        </div>
+        <button type="submit" class="gonder-butonu">Öneriyi Kaydet</button>
+        <div id="form-sonuc-mesaji" class="bildirim-alani" aria-live="assertive"></div>
+      </form>
+    </section>
+  </main>
+
+  <script src="betik.js"></script>
+</body>
+</html>
